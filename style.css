@@ -1,0 +1,57 @@
+/* CUSTOM PDF STYLE */
+.pdf__nav_bar {
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    background: linear-gradient(to right, #1CB5E0, #3b3b72);
+    padding: 13px;
+}
+
+.pdf__container {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+#navigation_controls  {
+    position: relative;
+    top: 6px;
+}
+
+#navigation_controls span {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#my_pdf_viewer {
+    border: solid 1px #cecece;
+    width: 100%;
+}
+
+#current_page {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+}
+
+#pdf__pages {
+    position: relative;
+    top: 13px;
+}
+
+#zoom_in,
+#zoom_out {
+    position: relative;
+    top: 2px;
+}
+
+::placeholder {
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+
+
+
+

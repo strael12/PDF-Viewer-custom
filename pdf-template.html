@@ -1,0 +1,134 @@
+<!doctype html>
+  
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Viewer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js">
+  </script>
+</head>
+<body>
+    <div class="pdf__container main__pdf_viewer">
+        <div id="my_pdf_viewer">
+            <div class="pdf__nav_bar">
+                <div>
+                    <img width="30" src="./icons/file-pdf-solid.svg" alt="logo">
+                </div>
+                <div id="navigation_controls">
+                    <span id="go_previous"><img width="20" src="./icons/chevron-left-solid.svg" alt="left"></span>
+                    <span id="go_next"><img width="20" src="./icons/chevron-right-solid.svg" alt="right"></span>
+                    <span id="zoom_in"><img width="27" src="./icons/square-plus-solid.svg" alt="plus"/></span>
+                    <span id="zoom_out"><img width="27" src="./icons/square-minus-solid.svg" alt="minus"></span>
+                </div>
+                
+                <!-- <div id="zoom_controls"></div> -->
+                <div id="pdf__pages">
+                    <input id="current_page" placeholder="1" readonly type="text"/>
+                </div>
+            </div>
+            <div id="canvas_container">
+                <canvas id="pdf_renderer"></canvas>
+            </div>
+    
+        </div>
+    </div>
+ 
+    <script>
+        var myState = {
+            pdf: null,
+            currentPage: 1,
+            zoom: 1
+        }
+      
+        pdfjsLib.getDocument('./pleyel_duo_op8.pdf').then((pdf) => {
+      
+            myState.pdf = pdf;
+            render();
+ 
+        });
+ 
+        function render() {
+            myState.pdf.getPage(myState.currentPage).then((page) => {
+
+                console.log(page);
+          
+                var canvas = document.getElementById("pdf_renderer");
+                var ctx = canvas.getContext('2d');
+      
+                var viewport = page.getViewport(myState.zoom);
+ 
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+          
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+            });
+        }
+
+
+        document.getElementById('go_previous').addEventListener('click', (e) => {
+            if(myState.pdf == null || myState.currentPage == 1) 
+              return;
+            myState.currentPage -= 1;
+            document.getElementById("current_page").value = myState.currentPage;
+            render();
+        });
+ 
+        document.getElementById('go_next').addEventListener('click', (e) => {
+            if(myState.pdf == null || myState.currentPage > myState.pdf._pdfInfo.numPages) 
+               return;
+            myState.currentPage += 1;
+            document.getElementById("current_page").value = myState.currentPage;
+            render();
+        });
+ 
+        document.getElementById('current_page').addEventListener('keypress', (e) => {
+            if(myState.pdf == null) return;
+          
+            // Get key code
+            var code = (e.keyCode ? e.keyCode : e.which);
+          
+            // If key code matches that of the Enter key
+            if(code == 13) {
+                var desiredPage = 
+                document.getElementById('current_page').valueAsNumber;
+                                  
+                if(desiredPage >= 1 && desiredPage <= myState.pdf._pdfInfo.numPages) {
+                    myState.currentPage = desiredPage;
+                    document.getElementById("current_page").value = desiredPage;
+                    render();
+                }
+            }
+        });
+ 
+        document.getElementById('zoom_in').addEventListener('click', (e) => {
+            if(myState.pdf == null) return;
+
+            // Quando é maior que 1.3, há uma pausa e para de executar o código
+            if(myState.zoom.toFixed(1) > 1.3){
+                myState.zoom = myState.zoom;
+            }else {
+                myState.zoom += 0.1;
+            }
+            render();
+        });
+ 
+        document.getElementById('zoom_out').addEventListener('click', (e) => {
+            if(myState.pdf == null) return;
+        
+            if(myState.zoom.toFixed(1) < 0.9){
+                myState.zoom = myState.zoom;
+            }else {
+                myState.zoom -= 0.1;
+            }
+            render();
+        });
+ 
+    </script>
+</body>
+</html>
